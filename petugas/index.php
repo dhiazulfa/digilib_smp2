@@ -22,6 +22,16 @@
 
 </head>
 
+<?php 
+	session_start();
+ 
+	// cek apakah yang mengakses halaman ini sudah login
+	if($_SESSION['nip']==""){
+		header("location:../petugas-login.php?pesan=gagal");
+	}
+ 
+?>
+
 <body id="page-top">
 
   <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
@@ -98,13 +108,15 @@
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           <i class="fas fa-fw fa-folder"></i>
-          <span>Pages</span>
+          <span>Tambah Data</span>
         </a>
         <div class="dropdown-menu" aria-labelledby="pagesDropdown">
-          <h6 class="dropdown-header">Login Screens:</h6>
-          <a class="dropdown-item" href="login.html">Login</a>
-          <a class="dropdown-item" href="register.html">Register</a>
-          <a class="dropdown-item" href="forgot-password.html">Forgot Password</a>
+          <h6 class="dropdown-header"> <b> Pilih: </b> </h6>
+          <a class="dropdown-item" href="data_buku/add_buku.php" target="frmMain">Buku</a>
+          <a class="dropdown-item" href="data_kategori/add_kategori.php" target="frmMain">Kategori</a>
+          <a class="dropdown-item" href="data_penerbit/add_penerbit.php" target="frmMain">Penerbit</a>
+          <a class="dropdown-item" href="data_pengarang/add_pengarang.php" target="frmMain">Pengarang</a>
+          <a class="dropdown-item" href="data_anggota/add_anggota.php" target="frmMain">Anggota</a>
           <div class="dropdown-divider"></div>
           <h6 class="dropdown-header">Other Pages:</h6>
           <a class="dropdown-item" href="data_kategori/data_kategori.php" target="frmMain">Kategori Buku</a>
@@ -166,7 +178,7 @@
         <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
         <div class="modal-footer">
           <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-          <a class="btn btn-primary" href="../petugas-login.php">Logout</a>
+          <a class="btn btn-primary" href="../login.php">Logout</a>
         </div>
       </div>
     </div>

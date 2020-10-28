@@ -18,7 +18,7 @@
             <h3 class="text-center title-login"> <b> Registrasi </b> </h3>
                 
                 <div class="form-group">
-                    <input type="text" class="form-control" name="nisn" placeholder="NISN" required>
+                    <input type="text" class="form-control" name="nisn" onkeypress="return number(event)" placeholder="NISN" required>
                 </div>                
 
                 <div class="form-group">
@@ -37,7 +37,7 @@
                 </div>
 
                 <div class="form-group">
-                    <input type="text" class="form-control" name="no_telp_anggota" placeholder="Nomor Telepon" required>
+                    <input type="text" class="form-control" name="no_telp_anggota" onkeypress="return number(event)" placeholder="Nomor Telepon" required>
                 </div>
 
                 <div class="form-group">
@@ -62,6 +62,16 @@
         </div>
     </div>
 
+    <!-- Js untuk nomor -->
+    <script type="text/javascript">
+		function number(evt) {
+		  var charCode = (evt.which) ? evt.which : event.keyCode
+		   if (charCode > 31 && (charCode < 48 || charCode > 57))
+ 
+		    return false;
+		  return true;
+		}
+    </script>
     <script src="assets/js/jquery.min.js"></script>
     <script src="assets/js/bootstrap.min.js"></script>
   </body>
