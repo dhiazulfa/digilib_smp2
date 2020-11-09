@@ -1,20 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Admin Page</title>
 
-    <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
-    <!-- Custom fonts for this template-->
-    <link href="../assets/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-    <!-- Page level plugin CSS-->
-    <link href="../assets/vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
-    <!-- Custom styles for this template-->
-    <link href="../assets/css/sb-admin.css" rel="stylesheet">
+<head>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>Admin Panel</title>
+
+  <!-- Custom fonts for this template-->
+  <link href="../assets/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+
+  <!-- Page level plugin CSS-->
+  <link href="../assets/vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
+
+  <!-- Custom styles for this template-->
+  <link href="../assets/css/sb-admin.css" rel="stylesheet">
+
 </head>
-<body id="page-top">
 
 <?php 
 	session_start();
@@ -26,198 +32,110 @@
  
 ?>
 
+<body id="page-top">
+
+<div id="container">
+
 <main role="main" class="col-md-auto ml-sm-auto col-lg-12 ">
+        <!-- DataTables Example -->
+        
+        <div class="card mb-3">
+          <div class="card-header">
+            <i class="fas fa-table"></i>
+            Data Buku  </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                <tr>
+                    <th> Nomor </th>
+                    <th> ID Pinjam </th>
+                    <th> Nama Peminjam</th>
+                    <th> Judul Buku </th>
+                    <th> Pengarang </th>
+                    <th> Tanggal Pinjam</th>
+                    <th> Tanggal Kembali</th>
+                    <th> Status</th>
 
-<form action="lib/edit_proses.php" enctype="multipart/form-data" method="POST">
+                </tr>
+                </thead>
 
-<table class="table table-striped table-sm" cellpadding="8">
-
-<?php
+                <tbody>
+                  
+                <?php
+// Load file koneksi.php
 
 include "../../koneksi.php";
 
-$id_buku = $_GET['id_buku'];
+$no = 0;
 
-$sql = mysqli_query($conn, "SELECT * FROM buku WHERE id_buku='$id_buku' ");
-$row = mysqli_num_rows($sql);
+$query = "SELECT buku.id_buku, buku.id_pengarang, buku.judul_buku, pengarang.id_pengarang, pengarang.nama_pengarang, anggota.id_anggota, anggota.nama_anggota, peminjaman.id_peminjaman,
+peminjaman.id_user, peminjaman.id_buku, peminjaman.tgl_pinjam, peminjaman.tgl_kembali, peminjaman.status FROM peminjaman INNER JOIN anggota ON peminjaman.id_user = anggota.id_anggota INNER JOIN buku ON peminjaman.id_buku = buku.id_buku
+INNER JOIN pengarang ON buku.id_pengarang = pengarang.id_pengarang WHERE peminjaman.status='Sudah Kembali' "; // Tampilkan semua data 
+$sql = mysqli_query($conn, $query); // Eksekusi/Jalankan query dari variabel $query
+$row = mysqli_num_rows($sql); // Ambil jumlah data dari hasil eksekusi $sql
 
-if($row > 0){ // Jika jumlah data lebih dari 0 (Berarti jika data ada)
-  while($data = mysqli_fetch_array($sql)){
-    ?> 
-<tr>
-    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
-        <h3>Buku <?php echo $data['judul_buku']; ?></h3>
-    </div>
-</tr>
-
-<input type="text" name="id_buku" value="<?php echo $data['id_buku']; ?>" readonly hidden/>
-
-<tr>
-<label>Nama Pengarang</label>
-<select name="id_pengarang" id="id_pengarang" class="form-control" onchange='changeValue(this.value)' required>
+if($row >= 0){ // Jika jumlah data lebih dari 0 (Berarti jika data ada)
   
-  <option value="">-Pilih-</option>
-
- <?php
- 
- include "../../koneksi.php";
- 
-$query     = mysqli_query($conn, "SELECT * FROM pengarang order by id_pengarang ASC"); 
-$result    = mysqli_query($conn, "SELECT * FROM pengarang");  
-$jsArray   = "var prdName = new Array();\n";
-    while ($row = mysqli_fetch_array($result)) {  
-    echo '<option name="id1"  value="' . $row['id_pengarang'] . '">' . $row['nama_pengarang'] . '</option>';  
-        $jsArray .= "prdName['" . $row['id_pengarang'] . "'] = {nama_pengarang:'" . addslashes($row['nama_pengarang'])."'};\n";
-   }
-
-?>
-
-</select>
-
-<label>Nama Penerbit</label>
-<select name="id_penerbit" id="id_penerbit" class="form-control" onchange='changeValue2(this.value)' required>
-  
-  <option value="">-Pilih-</option>
-
-
- <?php
- 
- include "../../koneksi.php";
- 
-$query     = mysqli_query($conn, "SELECT * FROM penerbit ORDER BY id_penerbit ASC"); 
-$result    = mysqli_query($conn, "SELECT * FROM penerbit");  
-$jsArray2   = "var prdName2 = new Array();\n";
-    while ($row = mysqli_fetch_array($result)) {  
-    echo '<option name="id2"  value="' . $row['id_penerbit'] . '">' . $row['nama_penerbit'] . '</option>';  
-        $jsArray2 .= "prdName2['" . $row['id_penerbit'] . "'] = {nama_penerbit:'" . addslashes($row['nama_penerbit'])."'};\n";
-   }
-
-?>
-
-</select>
-
-<label>Kategori</label>
-<select name="id_kategori" id="id_kategori" class="form-control" onchange='changeValue3(this.value)' required>
-  
-  <option value="">-Pilih-</option>
-
- <?php
- 
- include "../../koneksi.php";
- 
-$query     = mysqli_query($conn, "SELECT * FROM kategori ORDER BY id_kategori ASC"); 
-$result    = mysqli_query($conn, "SELECT * FROM kategori");  
-$jsArray3   = "var prdName3 = new Array();\n";
-    while ($row = mysqli_fetch_array($result)) {  
-    echo '<option name="id3"  value="' . $row['id_kategori'] . '">' . $row['nama_kategori'] . '</option>';  
-        $jsArray3 .= "prdName3['" . $row['id_kategori'] . "'] = {nama_kategori:'" . addslashes($row['nama_kategori'])."'};\n";
-   }
-
-?>
-
-</select>
-</tr> <br>
-
-<tr>
-    <td>ISBN</td>
-    <td> <input type="text" name="isbn" class="form-control" value="<?php echo $data['isbn']; ?>" required> </td>
-</tr>
-
-<tr>
-    <td>Judul Buku</td>
-    <td> <input type="text" name="judul_buku" class="form-control" value="<?php echo $data['judul_buku']; ?>" required> </td>
-</tr>
-
-<tr>
-    <td>Tahun Terbit</td>
-    <td> <input type="text" name="tahun_terbit" class="form-control" onkeypress="return number(event)" value="<?php echo $data['tahun_terbit']; ?>" required> </td>
-</tr>
-
-<tr>
-    <td>Jumlah Halaman</td>
-    <td> <input type="text" name="halaman" class="form-control" onkeypress="return number(event)" value="<?php echo $data['halaman']; ?>" required> </td>
-</tr>
-
-<tr>
-    <td>Stok</td>
-    <td> <input type="text" name="stok" class="form-control" onkeypress="return number(event)" value="<?php echo $data['stok']; ?>" required> </td>
-</tr>
-
-<tr>
-    <td>Deskripsi</td>
-    <td> <textarea class="form-control" name="deskripsi" rows="10" required> <?php echo $data['deskripsi']; ?> </textarea></td>
-</tr>
-
-<tr>
-    <td>Gambar</td>
-    <td><input type="file" name="gambar" required></td>
-</tr>
-
-<?php
-
+  while($data = mysqli_fetch_array($sql)){ // Ambil semua data dari hasil eksekusi $sql
+    $no++;
+    echo "<tr>";
+    echo "<th>$no</th>";
+    echo "<td>".$data['id_peminjaman']."</td>";
+    echo "<td>".$data['nama_anggota']."</td>";
+    echo "<td>".$data['judul_buku']."</td>";  
+    echo "<td>".$data['nama_pengarang']."</td>";
+    echo "<td>".$data['tgl_pinjam']."</td>";
+    echo "<td>".$data['tgl_kembali']."</td>";
+    echo "<td>".$data['status']."</td>";
+    echo "</tr>";
   }
 
-} else{ // Jika data tidak ada
-
-  echo "<tr><td colspan='4'>Data tidak ada</td></tr>";
-
+ } else{ // Jika data tidak ada
+  echo "<tr><td colspan='4'>Tidak ada DATA</td></tr>";
 }
 
 ?>
-</table>
 
-<input type="submit" value="Edit" class="btn btn-success">
-<input type="reset" value="Reset" class="btn btn-danger">
+</td>
+    <!--
+    echo "<td><img src='image/".$data['nama_img']."' width='100' height='100'></td>";
+    -->
+    
+    </tr>
+                </tbody>
 
-<a type="button" class="btn btn-info" href="data_buku.php">Kembali</a>
+              </table>
+            </div>
+          </div>
+          <div class="card-footer small text-muted">Perpustakaan SMP N 2 Giritontro
+
+          </div>
+        </div>
 
 
+  <!-- Bootstrap core JavaScript-->
+  <script src="../assets/vendor/jquery/jquery.min.js"></script>
+  <script src="../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
-<script type="text/javascript">
-		function number(evt) {
-		  var charCode = (evt.which) ? evt.which : event.keyCode
-		   if (charCode > 31 && (charCode < 48 || charCode > 57))
- 
-		    return false;
-		  return true;
-		}
-</script>
+  <!-- Core plugin JavaScript-->
+  <script src="../assets/vendor/jquery-easing/jquery.easing.min.js"></script>
 
-<script type="text/javascript"> 
+  <!-- Page level plugin JavaScript-->
+  <script src="../assets/vendor/chart.js/Chart.min.js"></script>
+  <script src="../assets/vendor/datatables/jquery.dataTables.js"></script>
+  <script src="../assets/vendor/datatables/dataTables.bootstrap4.js"></script>
 
-<?php
-    echo $jsArray;
-    echo $jsArray2;
-    echo $jsArray3;
-?>
+  <!-- Custom scripts for all pages-->
+  <script src="../assets/js/sb-admin.min.js"></script>
 
-function changeValue(id_pengarang){
-    document.getElementById('nama_pengarang').value = prdName[id_pengarang].nama_pengarang;
-};
+  <!-- Demo scripts for this page-->
+  <script src="../assets/js/demo/datatables-demo.js"></script>
+  <script src="../assets/js/demo/chart-area-demo.js"></script>
 
-function changeValue2(id_penerbit){
-    document.getElementById('nama_penerbit').value = prdName2[id_penerbit].nama_penerbit;
-};
-
-function changeValue3(id_kategori){
-    document.getElementById('nama_kategori').value = prdName3[id_kategori].nama_kategori;
-};
-
-</script>
-
-<!-- Ini JS nya-->
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-<script src="../../assets/js/myjs.js"></script>
-<script src="../../assets/js/jquery.min.js"></script>
-<script src="../../assets/js/popper.min.js"></script>
-<script src="../../assets/js/bootstrap.min.js"></script>
-
-<script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
-    <script>
-      feather.replace()
-</script>
-
-</form>
 </main>
+</div>
+
 </body>
+
 </html>

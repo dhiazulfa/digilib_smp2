@@ -152,7 +152,7 @@ if($row > 0){ // Jika jumlah data lebih dari 0 (Berarti jika data ada)
  <div class="col-lg-6">
   
   <div class="form-group">
-   <label>Tgl Awal</label>
+   <label>Tanggal Pinjam</label>
    <div class="input-group date">
     <div class="input-group-addon">
            <span class="glyphicon glyphicon-th"></span>
@@ -162,7 +162,7 @@ if($row > 0){ // Jika jumlah data lebih dari 0 (Berarti jika data ada)
   </div>
   
   <div class="form-group">
-   <label>Tgl Akhir</label>
+   <label>Tanggal Kembali</label>
    <div class="input-group date">
     <div class="input-group-addon">
            <span class="glyphicon glyphicon-th"></span>
@@ -203,6 +203,35 @@ echo '
 
 <tr>
     <input type="text" name="id_anggota" class="form-control" value="'. $data['id_anggota'] .'" hidden/>
+</tr>
+
+' ?>
+
+<?php
+   
+    }
+?>
+
+<?php
+$nisn = $_SESSION['nisn'];
+
+$q1 = mysqli_query($conn, "SELECT anggota.id_anggota, anggota.nisn, peminjaman.id_peminjaman, 
+peminjaman.id_user, peminjaman.status FROM peminjaman INNER JOIN anggota ON peminjaman.id_user = anggota.id_anggota
+WHERE anggota.nisn = '$nisn' ");
+
+while ($data = mysqli_fetch_array($q1)){
+echo ' 
+
+<div class="form-group">
+    <input type="text" name="status" class="form-control" value="'. $data['status'] .'" readonly hidden/>
+</div>
+
+<div class="form-group">
+    <input type="text" name="status1" class="form-control" value="Belum Diambil" readonly hidden/>
+</div>
+
+<tr>
+    <input type="text" name="id_anggota" class="form-control" value="'. $data['id_anggota'] .'" readonly hidden/>
 </tr>
 
 ' ?>

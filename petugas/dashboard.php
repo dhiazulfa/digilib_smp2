@@ -74,7 +74,7 @@
                 </div>
                 <div class="mr-5">Data Pengembalian</div>
               </div>
-              <a class="card-footer text-white clearfix small z-1" href="data_pengembalian/data_peminjaman.php">
+              <a class="card-footer text-white clearfix small z-1" href="data_pengembalian/data_pengembalian.php">
                 <span class="float-left">View Details</span>
                 <span class="float-right">
                   <i class="fas fa-angle-right"></i>
@@ -165,24 +165,16 @@
                 <thead>
                 <tr>
                     <th> Nomor </th>
+                    <th> ID Pinjam </th>
                     <th> Nama Peminjam</th>
                     <th> Judul Buku </th>
                     <th> Pengarang </th>
                     <th>Tanggal Pinjam</th>
                     <th>Tanggal Kembali</th>
+                    <th>Status</th>
+                    <th>Edit</th>
                 </tr>
                 </thead>
-
-                <tfoot>
-                  <tr>
-                    <th> Nomor </th>
-                    <th> Nama Peminjam</th>
-                    <th> Judul Buku </th>
-                    <th> Pengarang </th>
-                    <th> Tanggal Pinjam</th>
-                    <th> Tanggal Kembali</th>
-                  </tr>
-                </tfoot>
 
                 <tbody>
                   
@@ -194,8 +186,7 @@ include "../koneksi.php";
 $no = 0;
 
 $query = "SELECT buku.id_buku, buku.id_pengarang, buku.judul_buku, pengarang.id_pengarang, pengarang.nama_pengarang, anggota.id_anggota, anggota.nama_anggota, peminjaman.id_peminjaman,
-peminjaman.id_user, peminjaman.id_buku, peminjaman.tgl_pinjam, peminjaman.tgl_kembali 
-FROM peminjaman INNER JOIN anggota ON peminjaman.id_user = anggota.id_anggota INNER JOIN buku ON peminjaman.id_buku = buku.id_buku
+peminjaman.id_user, peminjaman.id_buku, peminjaman.tgl_pinjam, peminjaman.tgl_kembali, peminjaman.status FROM peminjaman INNER JOIN anggota ON peminjaman.id_user = anggota.id_anggota INNER JOIN buku ON peminjaman.id_buku = buku.id_buku
 INNER JOIN pengarang ON buku.id_pengarang = pengarang.id_pengarang"; // Tampilkan semua data 
 $sql = mysqli_query($conn, $query); // Eksekusi/Jalankan query dari variabel $query
 $row = mysqli_num_rows($sql); // Ambil jumlah data dari hasil eksekusi $sql
@@ -206,11 +197,14 @@ if($row >= 0){ // Jika jumlah data lebih dari 0 (Berarti jika data ada)
     $no++;
     echo "<tr>";
     echo "<th>$no</th>";
+    echo "<td>".$data['id_peminjaman']."</td>";
     echo "<td>".$data['nama_anggota']."</td>";
-    echo "<td>".$data['judul_buku']."</td>";
+    echo "<td>".$data['judul_buku']."</td>";  
     echo "<td>".$data['nama_pengarang']."</td>";
     echo "<td>".$data['tgl_pinjam']."</td>";
     echo "<td>".$data['tgl_kembali']."</td>";
+    echo "<td>".$data['status']."</td>";
+    echo "<td> <a class='btn btn-info' href='edit_status.php?id_peminjaman=$data[id_peminjaman]' target='frmMain'> Edit </td>";
     echo "</tr>";
   }
 
